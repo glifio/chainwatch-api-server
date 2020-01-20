@@ -1,5 +1,6 @@
 const path = require('path')
 const express = require('express')
+const cors = require('cors')
 const morgan = require('morgan')
 const PORT = process.env.PORT || 8080
 const { client } = require('./pgClient')
@@ -8,10 +9,8 @@ const app = express()
 module.exports = app
 
 const createApp = () => {
-  // logging middleware
   app.use(morgan('dev'))
-
-  // body parsing middleware
+  app.use(cors())
   app.use(express.json())
   app.use(express.urlencoded({ extended: true }))
 
