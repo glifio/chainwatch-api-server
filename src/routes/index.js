@@ -36,14 +36,29 @@ router.get('/messages/:address', async (req, res, next) => {
     getMessageCountByAddress(address),
     client.query(
       `
-      SELECT *
-      FROM messages
-      WHERE "to" = $1
-      OR "from" = $1
-      ORDER BY nonce DESC
-      LIMIT $2
-      OFFSET $3
-    `,
+        SELECT
+          messages.cid,
+          messages."from",
+          messages."to",
+          messages.nonce,
+          messages.value,
+          messages.gasprice,
+          messages.gaslimit,
+          messages.method,
+          messages.params,
+          receipts.state,
+          receipts.idx,
+          receipts.exit,
+          receipts.gas_used,
+          receipts.return
+        FROM messages 
+        INNER JOIN receipts on messages .cid = receipts.msg
+        WHERE "to" = $1
+        OR "from" = $1
+        ORDER BY nonce DESC
+        LIMIT $2
+        OFFSET $3
+      `,
       [address, limit, offset]
     )
   ])
