@@ -9,6 +9,7 @@ const getMessageCountByAddress = async address => {
     `
       SELECT COUNT(*)
       FROM messages
+      INNER JOIN receipts on messages .cid = receipts.msg
       WHERE "to" = $1
       OR "from" = $1
     `,
