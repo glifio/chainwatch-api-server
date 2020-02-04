@@ -3,7 +3,7 @@ const express = require('express')
 const cors = require('cors')
 const morgan = require('morgan')
 const PORT = process.env.PORT || 8080
-const { startPGClient } = require('./pgClient')
+const { pg } = require('./pgClient')
 
 const app = express()
 module.exports = app
@@ -42,8 +42,14 @@ const startListening = () => {
   )
 }
 
+const connectDB = async () => {
+  pg.initClient()
+  await pg.connect()
+  console.log('Connected to the db')
+}
+
 async function bootApp() {
-  await startPGClient()
+  await connectDB()
   await createApp()
   await startListening()
 }
