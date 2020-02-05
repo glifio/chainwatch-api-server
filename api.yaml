@@ -1,0 +1,28 @@
+kind: Pod
+apiVersion: v1
+metadata:
+  name: chainwatch-api-server
+  labels:
+    app: chainwatch-api-server
+spec:
+  containers:
+    - name: chainwatch-api-server
+      image: openworklabs/chainwatch-api-server:0.1.0
+      env:
+        - name: LOTUS_DB
+          valueFrom:
+            secretKeyRef:
+              name: chainwatch-secret
+              key: LOTUS_DB
+        
+---
+
+kind: Service
+apiVersion: v1
+metadata:
+  name: chainwatch-api-service
+spec:
+  selector:
+    app: chainwatch-api-server
+  ports:
+    - port: 8080 # Default port for image
