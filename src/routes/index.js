@@ -1,10 +1,11 @@
 const router = require('express').Router()
 module.exports = router
 
-const { client } = require('../pgClient')
+const { pg } = require('../pgClient')
 const { validFilAddress } = require('../utils')
 
 const getMessageCountByAddress = async address => {
+  const client = pg.getClient()
   const { rows } = await client.query(
     `
       SELECT COUNT(*)
@@ -32,6 +33,8 @@ router.get('/messages/:address', async (req, res, next) => {
   const limit = Number(req.query.limit) || 10
 
   const offset = page * limit
+
+  const client = pg.getClient()
 
   const [count, data] = await Promise.all([
     getMessageCountByAddress(address),

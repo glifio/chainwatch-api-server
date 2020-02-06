@@ -1,19 +1,29 @@
 const { Client } = require('pg')
 require('dotenv').config()
 
-const connectionString = process.env.LOTUS_DB
-const client = new Client(connectionString)
+class PGClient {
+  constructor(connectionString) {
+    this.client = null
+    this.connectionString = connectionString
+    this.connected = false
+  }
 
-const startPGClient = async () => {
-  try {
-    await client.connect()
-    console.log('Connected to database')
-  } catch (error) {
-    throw error
+  initClient = () => (this.client = new Client(this.connectionString))
+
+  getClient = () => this.client
+
+  connect = async () => {
+    try {
+      await this.client.connect()
+      this.connected = true
+    } catch (err) {
+      throw new Error(err)
+    }
   }
 }
 
+const pg = new PGClient(process.env.LOTUS_DB)
+
 module.exports = {
-  startPGClient,
-  client
+  pg
 }
